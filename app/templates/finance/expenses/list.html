@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% block title %}Expenses · lifedger{% endblock %}
+
+{% block content %}
+<div class="flex justify-between items-center mb-6">
+  <h1 class="text-2xl font-semibold">Expenses</h1>
+  <div class="flex items-center gap-2">
+    <a href="{{ url_for('finance.expense_create') }}"
+      class="bg-black text-white px-4 py-2 rounded">
+      + Add expense
+    </a>
+
+    <a href="{{ url_for('finance.scan_expense') }}"
+      class="border px-4 py-2 rounded">
+      📷 Scan
+    </a>
+  </div>
+</div>
+
+<table class="w-full bg-white shadow rounded">
+  <thead class="bg-gray-100 text-left">
+    <tr>
+      <th class="p-3">Date</th>
+      <th class="p-3">Category</th>
+      <th class="p-3">Merchant</th>
+      <th class="p-3">Description</th>
+      <th class="p-3 text-right">Amount</th>
+      <th class="p-3"></th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for e in expenses %}
+    <tr class="border-t">
+      <td class="p-3">{{ e.date }}</td>
+      <td class="p-3">{{ e.category.name }}</td>
+      <td class="p-3">{{ e.merchant or "-" }}</td>
+      <td class="p-3">{{ e.description or "-" }}</td>
+      <td class="p-3 text-right font-mono">
+        {{ "%.2f"|format(e.amount) }}
+      </td>
+      <td class="p-3 text-right space-x-2">
+        <a href="{{ url_for('finance.expense_edit', expense_id=e.id) }}"
+           class="text-blue-600">Edit</a>
+        <form method="POST"
+              action="{{ url_for('finance.expense_delete', expense_id=e.id) }}"
+              class="inline">
+          <button class="text-red-600"
+                  onclick="return confirm('Delete this expense?')">
+            Delete
+          </button>
+        </form>
+      </td>
+    </tr>
+    {% else %}
+    <tr>
+      <td colspan="5" class="p-4 text-center text-gray-500">
+        No expenses yet.
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

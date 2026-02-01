@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}Forecast · lifedger{% endblock %}
+
+{% block content %}
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+  <div class="bg-white p-4 rounded shadow">
+    <h3 class="font-semibold">Statistical</h3>
+    <p class="text-2xl">{{ stat.forecast }}</p>
+    <p class="text-sm text-gray-500">
+      {{ stat.low }} – {{ stat.high }}
+    </p>
+  </div>
+
+  <div class="bg-white p-4 rounded shadow">
+    <h3 class="font-semibold">ML (LSTM)</h3>
+
+    {% if ml_value %}
+      <p class="text-2xl">{{ ml_value }}</p>
+      <p class="text-sm text-gray-500">
+        Δ vs baseline: {{ delta }}
+      </p>
+    {% else %}
+      <p class="text-gray-500 text-sm">
+        Not enough data to train ML model yet.
+      </p>
+    {% endif %}
+  </div>
+
+</div>
+{% endblock %}

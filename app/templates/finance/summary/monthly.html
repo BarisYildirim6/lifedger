@@ -1,0 +1,199 @@
+{% extends "base.html" %}
+{% block title %}Monthly Summary · lifedger{% endblock %}
+
+{% block content %}
+<div class="flex justify-between items-center mb-6">
+  <h1 class="text-2xl font-semibold">
+    {{ year }} / {{ "%02d"|format(month) }} Summary
+  </h1>
+
+  <form method="get" class="flex space-x-2">
+    <input type="number" name="year" value="{{ year }}"
+           class="border rounded px-2 py-1 w-24">
+    <input type="number" name="month" value="{{ month }}"
+           min="1" max="12"
+           class="border rounded px-2 py-1 w-20">
+    <button class="px-3 py-1 bg-black text-white rounded">
+      Go
+    </button>
+  </form>
+</div>
+
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+  <div class="bg-white p-4 rounded shadow">
+    <p class="text-sm text-gray-500">This month</p>
+    <p class="text-2xl font-semibold">{{ "%.2f"|format(total) }}</p>
+  </div>
+
+  <div class="bg-white p-4 rounded shadow">
+    <p class="text-sm text-gray-500">Previous month</p>
+    <p class="text-2xl font-semibold">{{ "%.2f"|format(prev_total) }}</p>
+  </div>
+
+  <div class="bg-white p-4 rounded shadow">
+    <p class="text-sm text-gray-500">Change</p>
+    <p class="text-2xl font-semibold
+      {% if delta > 0 %}text-red-600
+      {% elif delta < 0 %}text-green-600
+      {% endif %}">
+      {{ "%.2f"|format(delta) }}
+    </p>
+  </div>
+
+  <div class="bg-white p-4 rounded shadow">
+    <p class="text-sm text-gray-500">Income</p>
+    <p class="text-2xl font-semibold">
+      {{ "%.2f"|format(income_total) }}
+    </p>
+  </div>
+
+  <div class="bg-white p-4 rounded shadow">
+    <p class="text-sm text-gray-500">Net balance</p>
+    <p class="text-2xl font-semibold
+      {% if net_balance >= 0 %}text-green-600{% else %}text-red-600{% endif %}">
+      {{ "%.2f"|format(net_balance) }}
+    </p>
+  </div>
+</div>
+
+<h2 class="text-xl font-semibold mb-3">6-Month Expense Trend</h2>
+
+<div class="bg-white rounded shadow p-4 mb-8">
+  <canvas id="trendChart" class="max-h-80"></canvas>
+</div>
+
+<h2 class="text-xl font-semibold mb-3">Budget vs Actual</h2>
+
+<div class="bg-white rounded shadow p-4 mb-8">
+  <canvas id="budgetChart" class="max-h-96"></canvas>
+</div>
+
+<h2 class="text-xl font-semibold mb-3">Insights</h2>
+
+<div class="bg-white rounded shadow p-4 space-y-2 mb-8">
+  {% for insight in insights %}
+    <p class="text-gray-700">• {{ insight }}</p>
+  {% else %}
+    <p class="text-gray-500">No insights available.</p>
+  {% endfor %}
+</div>
+
+<h2 class="text-xl font-semibold mb-3">Spending Breakdown</h2>
+
+<div class="bg-white rounded shadow p-4 mb-8">
+  {% if chart_labels %}
+    <canvas id="categoryChart" class="max-h-96"></canvas>
+  {% else %}
+    <p class="text-gray-500">No data to display.</p>
+  {% endif %}
+</div>
+
+<h2 class="text-xl font-semibold mb-3">By Category</h2>
+
+<table class="w-full bg-white shadow rounded">
+  <thead class="bg-gray-100 text-left">
+    <tr>
+      <th class="p-3">Category</th>
+      <th class="p-3 text-right">Total</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for name, total in by_category %}
+    <tr class="border-t">
+      <td class="p-3">{{ name }}</td>
+      <td class="p-3 text-right font-mono">
+        {{ "%.2f"|format(total) }}
+      </td>
+    </tr>
+    {% else %}
+    <tr>
+      <td colspan="2" class="p-4 text-center text-gray-500">
+        No expenses for this month.
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+{% if chart_labels %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  const ctx = document.getElementById('categoryChart');
+
+  new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+      labels: {{ chart_labels | tojson }},
+      datasets: [{
+        data: {{ chart_values | tojson }},
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: {
+          position: 'bottom'
+        }
+      },
+      cutout: '65%'
+    }
+  });
+</script>
+<script>
+  const trendCtx = document.getElementById('trendChart');
+
+  new Chart(trendCtx, {
+    type: 'line',
+    data: {
+      labels: {{ trend_labels | tojson }},
+      datasets: [{
+        label: 'Total expenses',
+        data: {{ trend_values | tojson }},
+        tension: 0.3,
+        fill: false,
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { display: false }
+      },
+      scales: {
+        y: {
+          beginAtZero: true
+        }
+      }
+    }
+  });
+</script>
+<script>
+  const budgetCtx = document.getElementById('budgetChart');
+
+  new Chart(budgetCtx, {
+    type: 'bar',
+    data: {
+      labels: {{ budget_labels | tojson }},
+      datasets: [
+        {
+          label: 'Actual',
+          data: {{ actual_values | tojson }},
+        },
+        {
+          label: 'Budget',
+          data: {{ budget_values | tojson }},
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { position: 'bottom' }
+      },
+      scales: {
+        y: { beginAtZero: true }
+      }
+    }
+  });
+</script>
+{% endif %}
+{% endblock %}

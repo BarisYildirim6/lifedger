@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block title %}Income · lifedger{% endblock %}
+
+{% block content %}
+<div class="flex justify-between items-center mb-6">
+  <h1 class="text-2xl font-semibold">Income</h1>
+  <a href="{{ url_for('finance.income_create') }}"
+     class="bg-black text-white px-4 py-2 rounded">
+    + Add income
+  </a>
+</div>
+
+<table class="w-full bg-white shadow rounded">
+  <thead class="bg-gray-100">
+    <tr>
+      <th class="p-3">Date</th>
+      <th class="p-3">Source</th>
+      <th class="p-3 text-right">Amount</th>
+      <th class="p-3"></th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for i in income_entries %}
+    <tr class="border-t">
+      <td class="p-3">{{ i.date }}</td>
+      <td class="p-3">{{ i.source }}</td>
+      <td class="p-3 text-right font-mono">
+        {{ "%.2f"|format(i.amount) }}
+      </td>
+      <td class="p-3 text-right space-x-2">
+        <a href="{{ url_for('finance.income_edit', income_id=i.id) }}"
+           class="text-blue-600">Edit</a>
+        <form method="POST"
+              action="{{ url_for('finance.income_delete', income_id=i.id) }}"
+              class="inline">
+          <button class="text-red-600"
+                  onclick="return confirm('Delete income?')">
+            Delete
+          </button>
+        </form>
+      </td>
+    </tr>
+    {% else %}
+    <tr>
+      <td colspan="4" class="p-4 text-center text-gray-500">
+        No income entries yet.
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

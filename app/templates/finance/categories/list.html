@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block title %}Categories · lifedger{% endblock %}
+
+{% block content %}
+<div class="flex justify-between items-center mb-6">
+  <h1 class="text-2xl font-semibold">Categories</h1>
+  <a href="{{ url_for('finance.category_create') }}"
+     class="bg-black text-white px-4 py-2 rounded">
+    + Add category
+  </a>
+</div>
+
+<table class="w-full bg-white shadow rounded">
+  <thead class="bg-gray-100">
+    <tr>
+      <th class="p-3">Name</th>
+      <th class="p-3">Parent</th>
+      <th class="p-3"></th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for c in categories %}
+    <tr class="border-t">
+      <td class="p-3 font-medium">
+        {% if c.parent %}— {% endif %}
+        {{ c.name }}
+      </td>
+      <td class="p-3 text-gray-600">
+        {{ c.parent.name if c.parent else "—" }}
+      </td>
+      <td class="p-3 text-right space-x-2">
+        <a href="{{ url_for('finance.category_edit', category_id=c.id) }}"
+           class="text-blue-600">Edit</a>
+        <form method="POST"
+              action="{{ url_for('finance.category_delete', category_id=c.id) }}"
+              class="inline">
+          <button class="text-red-600"
+                  onclick="return confirm('Delete this category?')">
+            Delete
+          </button>
+        </form>
+      </td>
+    </tr>
+    {% else %}
+    <tr>
+      <td colspan="3" class="p-4 text-center text-gray-500">
+        No categories yet.
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

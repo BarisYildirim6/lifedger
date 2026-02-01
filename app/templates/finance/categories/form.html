@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}Category · lifedger{% endblock %}
+
+{% block content %}
+<h1 class="text-2xl font-semibold mb-6">
+  {{ "Edit" if category else "Add" }} Category
+</h1>
+
+<form method="POST"
+      class="bg-white p-6 rounded shadow max-w-lg space-y-4">
+
+  <label class="block">
+    <span class="text-sm">Name</span>
+    <input type="text" name="name" required
+      value="{{ category.name if category else '' }}"
+      class="w-full border rounded px-3 py-2">
+  </label>
+
+  <label class="block">
+    <span class="text-sm">Parent category (optional)</span>
+    <select name="parent_id"
+            class="w-full border rounded px-3 py-2">
+      <option value="">— None —</option>
+      {% for p in parents %}
+        <option value="{{ p.id }}"
+          {% if category and category.parent_id == p.id %}selected{% endif %}>
+          {{ p.name }}
+        </option>
+      {% endfor %}
+    </select>
+  </label>
+
+  <div class="flex justify-end space-x-3">
+    <a href="{{ url_for('finance.category_list') }}"
+       class="px-4 py-2 border rounded">
+      Cancel
+    </a>
+    <button class="px-4 py-2 bg-black text-white rounded">
+      Save
+    </button>
+  </div>
+</form>
+{% endblock %}

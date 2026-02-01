@@ -55,8 +55,8 @@ The project is designed to be:
 │  (Flask)     │        │ (materialize │
 │              │        │  recurring)  │
 └──────┬───────┘        └──────┬───────┘
-       │                        │
-       └──────────┬─────────────┘
+       │                       │
+       └──────────┬────────────┘
                   │
             ┌─────▼─────┐
             │ PostgreSQL│
@@ -113,10 +113,10 @@ cp .env.example .env
 Edit `.env` if needed (defaults usually work):
 
 ```env
+FLASK_APP=wsgi.py
 FLASK_ENV=development
-FLASK_APP=app.py
-DATABASE_URL=postgresql://accounting:accounting@db:5432/accounting
-SECRET_KEY=dev-secret
+SECRET_KEY=secret-key
+DATABASE_URL=postgresql+psycopg2://accounting:accounting@db:5432/accounting
 ```
 
 ---
@@ -246,9 +246,3 @@ lifedger/
 MIT – do whatever you want, just don’t be evil.
 
 ---
-
-If you want, I can also:
-
-* Add screenshots to this README
-* Write a **production deployment guide**
-* Split this into `DEV.md` / `DEPLOY.md`

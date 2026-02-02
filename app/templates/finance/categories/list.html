@@ -3,32 +3,33 @@
 
 {% block content %}
 <div class="flex justify-between items-center mb-6">
-  <h1 class="text-2xl font-semibold">Categories</h1>
+  <h1 style="color:var(--text)" class="text-2xl font-semibold">Categories</h1>
   <a href="{{ url_for('finance.category_create') }}"
-     class="bg-black text-white px-4 py-2 rounded">
+     style="color:var(--bg); background:var(--text); border-color:var(--border)" 
+     class="border px-4 py-2 rounded">
     + Add category
   </a>
 </div>
 
-<table class="w-full bg-white shadow rounded">
-  <thead class="bg-gray-100">
+<table style="background:var(--card)" class="w-full shadow rounded">
+  <thead style="background:var(--text)">
     <tr>
-      <th class="p-3">Name</th>
-      <th class="p-3">Parent</th>
-      <th class="p-3"></th>
+      <th style="color:var(--card)" class="p-3">Name</th>
+      <th style="color:var(--card)" class="p-3">Parent</th>
+      <th style="color:var(--card)" class="p-3"></th>
     </tr>
   </thead>
   <tbody>
     {% for c in categories %}
     <tr class="border-t">
-      <td class="p-3 font-medium">
+      <td style="color:var(--text)" class="p-3 font-medium">
         {% if c.parent %}— {% endif %}
         {{ c.name }}
       </td>
-      <td class="p-3 text-gray-600">
+      <td style="color:var(--text)" class="p-3 text-gray-600">
         {{ c.parent.name if c.parent else "—" }}
       </td>
-      <td class="p-3 text-right space-x-2">
+      <td style="color:var(--text)" class="p-3 text-right space-x-2">
         <a href="{{ url_for('finance.category_edit', category_id=c.id) }}"
            class="text-blue-600">Edit</a>
         <form method="POST"

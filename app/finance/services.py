@@ -1,6 +1,7 @@
 from datetime import date
 from sqlalchemy import func
 from statistics import stdev
+from decimal import Decimal
 from app import db
 from .models import RecurringTransaction, Expense, Income
 
@@ -30,13 +31,14 @@ def get_next_month_recurring_total(user_id):
         .all()
     )
 
-    total = 0.0
+    total = Decimal("0.00")
 
     for r in recurring:
-        if r.frequency == "monthly":
+        '''if r.frequency == "monthly":
             total += r.amount
         elif r.frequency == "yearly" and r.start_date.month == next_month:
-            total += r.amount
+            total += r.amount'''
+        total += r.amount
 
     return float(total)
 
@@ -184,6 +186,7 @@ def materialize_recurring_expenses(today: date | None = None):
             user_id=rule.user_id,
             category_id=rule.category_id,
             amount=rule.amount,
+            merchant=rule.merchant,
             description=rule.description,
             date=today,
             recurring_id=rule.id

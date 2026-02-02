@@ -2,8 +2,86 @@
 {% block title %}Dashboard · lifedger{% endblock %}
 
 {% block content %}
-<h1 class="text-3xl font-semibold mb-4">Dashboard</h1>
-<p class="text-gray-600">
-  Welcome to lifedger. Your financial life, calmly organized.
-</p>
+<div style="background:var(--bg)" class="space-y-8">
+
+  <!-- Greeting -->
+  <div style="background:var(--bg)">
+    <h1 style="color:var(--text)" class="text-3xl font-semibold">
+      Welcome back{{ ", " ~ current_user.first_name if current_user.first_name else "" }} 👋
+    </h1>
+    <p style="color:var(--muted)"  class="mt-1">
+      Here’s a calm snapshot of your financial life.
+    </p>
+  </div>
+
+  <!-- Summary cards -->
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+    <!-- This month -->
+    <div style="background:var(--card); border-color:var(--border)" class="border rounded-xl shadow p-5">
+      <p style="color:var(--muted)" class="text-sm">This month</p>
+      <p style="color:var(--text)" class="text-2xl font-semibold mt-1">
+        {{ month_total or "—" }}
+      </p>
+      <p class="text-xs text-gray-400 mt-1">
+        total expenses
+      </p>
+    </div>
+
+    <!-- Largest category -->
+    <div style="background:var(--card); border-color:var(--border)" class="border rounded-xl shadow p-5">
+      <p style="color:var(--muted)" class="text-sm">Top category</p>
+      <p style="color:var(--text)" class="text-xl font-medium mt-1">
+        {{ top_category.name if top_category else "Not enough data yet" }}
+      </p>
+      {% if top_category %}
+        <p class="text-xs text-gray-400 mt-1">
+          {{ top_category.amount }}
+        </p>
+      {% endif %}
+    </div>
+
+    <!-- Recurring -->
+    <div style="background:var(--card); border-color:var(--border)" class="border rounded-xl shadow p-5">
+      <p style="color:var(--muted)" class="text-sm">Recurring impact</p>
+      <p style="color:var(--text)" class="text-2xl font-semibold mt-1">
+        {{ recurring_total or "—" }}
+      </p>
+      <p class="text-xs text-gray-400 mt-1">
+        monthly commitments
+      </p>
+    </div>
+
+  </div>
+
+  <!-- Actions -->
+  <div style="background:var(--card); border-color:var(--border)" class="border rounded-xl p-6">
+    <h2 style="color:var(--text)" class="text-lg font-medium mb-3">
+      What would you like to do?
+    </h2>
+
+    <div class="flex flex-wrap gap-3">
+      <a href="{{ url_for('finance.expense_create') }}"
+         style="color:var(--bg); background:var(--text); border-color:var(--border)" class="px-4 py-2 bg-black rounded-lg">
+        + Add expense
+      </a>
+
+      <a href="{{ url_for('finance.scan_expense') }}"
+         style="color:var(--text); background:var(--card); border-color:var(--border)" class="px-4 py-2 border rounded-lg">
+        📷 Scan receipt
+      </a>
+
+      <a href="{{ url_for('finance.recurring_list') }}"
+         style="color:var(--text); background:var(--card); border-color:var(--border)" class="px-4 py-2 border rounded-lg">
+        🔁 Manage recurring
+      </a>
+    </div>
+  </div>
+
+  <!-- Gentle insight -->
+  <div style="color:var(--muted)" class="text-sm italic">
+    Tip: The more consistently you track, the smarter lifedger becomes.
+  </div>
+
+</div>
 {% endblock %}

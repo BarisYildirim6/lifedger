@@ -4,30 +4,116 @@
   <meta charset="UTF-8">
   <title>{% block title %}lifedger{% endblock %}</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+  :root {
+    --bg: #f9fafb;
+    --text: #111827;
+    --card: #ffffff;
+    --muted: #6b7280;
+    --border: #e5e7eb;
+  }
+
+  .dark {
+    --bg: #0f172a;
+    --text: #e5e7eb;
+    --card: #020617;
+    --muted: #94a3b8;
+    --border: #1e293b;
+  }
+
+  body {
+    background-color: var(--bg);
+    color: var(--text);
+  }
+  </style>
 </head>
-<body class="bg-gray-100 min-h-screen">
+<body class="min-h-screen">
+{% macro nav_link(endpoint, label) %}
+  {% set active = request.endpoint == endpoint %}
+  <a href="{{ url_for(endpoint) }}"
+     class="px-3 py-2 rounded text-sm"
+     style="
+       background: {{ 'var(--border)' if active else 'transparent' }};
+       font-weight: {{ '600' if active else '400' }};
+       color: var(--text);
+     ">
+    {{ label }}
+  </a>
+{% endmacro %}
 
-<nav class="bg-white shadow px-6 py-4 flex justify-between items-center">
-  <div class="text-xl font-semibold text-gray-800">
-    lifedger
-  </div>
 
-  <div class="space-x-4">
-    {% if current_user.is_authenticated %}
-      <a href="{{ url_for('finance.dashboard') }}" class="text-gray-700 hover:text-black">Dashboard</a>
-      <a href="{{ url_for('finance.income_list') }}" class="text-gray-700 hover:text-black">Income</a>
-      <a href="{{ url_for('finance.expense_list') }}" class="text-gray-700 hover:text-black">Expenses</a>
-      <a href="{{ url_for('finance.category_list') }}" class="text-gray-700 hover:text-black">Categories</a>
-      <a href="{{ url_for('finance.recurring_list') }}" class="text-gray-700 hover:text-black">Recurring</a>
-      <a href="{{ url_for('finance.next_month_forecast') }}" class="text-gray-700 hover:text-black">Forecast</a>
-      <a href="{{ url_for('finance.compare_forecast') }}" class="text-gray-700 hover:text-black">Compare Forecast</a>
+<nav class="border-b shadow-sm"
+     style="background:var(--card); border-color:var(--border)">
+  <div class="max-w-6xl mx-auto px-6 py-3 flex items-center justify-between">
 
-      <a href="{{ url_for('finance.monthly_summary') }}" class="text-gray-700 hover:text-black">Summary</a>
+    <!-- Brand -->
+    <div class="flex items-center space-x-6">
+      <div class="text-xl font-semibold" style="color:var(--text)">
+        lifedger
+      </div>
 
-      <a href="{{ url_for('auth.logout') }}" class="text-red-600 hover:text-red-800">Logout</a>
-    {% else %}
-      <a href="{{ url_for('auth.login') }}" class="text-gray-700">Login</a>
-    {% endif %}
+      {% if current_user.is_authenticated %}
+      <!-- Primary nav -->
+      <div class="hidden md:flex items-center space-x-1">
+        {{ nav_link('finance.dashboard', 'Dashboard') }}
+
+        <!-- Finance group -->
+        <div class="relative group">
+          <button class="px-3 py-2 rounded text-sm"
+                  style="color:var(--text)">
+            Finance ▾
+          </button>
+          <div class="absolute hidden group-hover:block mt-0 rounded shadow border"
+               style="background:var(--card); border-color:var(--border)">
+            {{ nav_link('finance.expense_list', 'Expenses') }}
+            {{ nav_link('finance.income_list', 'Income') }}
+            {{ nav_link('finance.recurring_list', 'Recurring') }}
+            {{ nav_link('finance.category_list', 'Categories') }}
+          </div>
+        </div>
+
+        <!-- Insights group -->
+        <div class="relative group">
+          <button class="px-3 py-2 rounded text-sm"
+                  style="color:var(--text)">
+            Insights ▾
+          </button>
+          <div class="absolute hidden group-hover:block mt-0 rounded shadow border"
+               style="background:var(--card); border-color:var(--border)">
+            {{ nav_link('finance.monthly_summary', 'Summary') }}
+            {{ nav_link('finance.next_month_forecast', 'Forecast') }}
+            {{ nav_link('finance.compare_forecast', 'Compare') }}
+          </div>
+        </div>
+      </div>
+      {% endif %}
+    </div>
+
+    <!-- Utilities -->
+    <div class="flex items-center space-x-4">
+      {% if current_user.is_authenticated %}
+
+      <!-- Theme switch -->
+      <label class="relative inline-flex items-center cursor-pointer">
+        <input type="checkbox" id="themeToggle" class="sr-only">
+        <div class="w-11 h-6 rounded-full border"
+             style="background:var(--bg); border-color:var(--border)">
+        </div>
+        <div id="themeKnob"
+             class="absolute left-1 top-1 w-4 h-4 rounded-full transition"
+             style="background:var(--text)">
+        </div>
+      </label>
+
+      <a href="{{ url_for('auth.logout') }}"
+         class="text-sm text-red-600 hover:underline">
+        Logout
+      </a>
+      {% else %}
+        <a href="{{ url_for('auth.login') }}">Login</a>
+      {% endif %}
+    </div>
+
   </div>
 </nav>
 
@@ -48,6 +134,33 @@
 <main class="max-w-4xl mx-auto mt-10 px-4">
   {% block content %}{% endblock %}
 </main>
+<script>
+(function () {
+  const root = document.documentElement
+  const toggle = document.getElementById("themeToggle")
+  const knob = document.getElementById("themeKnob")
 
+  function sync() {
+    const dark = root.classList.contains("dark")
+    toggle.checked = dark
+    knob.style.transform = dark ? "translateX(20px)" : "translateX(0)"
+  }
+
+  if (localStorage.getItem("theme") === "dark") {
+    root.classList.add("dark")
+  }
+
+  sync()
+
+  toggle?.addEventListener("change", () => {
+    root.classList.toggle("dark")
+    localStorage.setItem(
+      "theme",
+      root.classList.contains("dark") ? "dark" : "light"
+    )
+    sync()
+  })
+})()
+</script>
 </body>
 </html>

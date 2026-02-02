@@ -125,6 +125,7 @@ class RecurringTransaction(db.Model):
 
     amount = db.Column(db.Numeric(10, 2), nullable=False)
     description = db.Column(db.String(255))
+    merchant = db.Column(db.String(255))
 
     category_id = db.Column(db.Integer, db.ForeignKey("categories.id"), nullable=True)
 

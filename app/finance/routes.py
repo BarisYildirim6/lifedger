@@ -14,7 +14,56 @@ from .services import generate_monthly_insights, materialize_recurring
 @finance_bp.route("/")
 @login_required
 def dashboard():
-    return render_template("finance/dashboard.html")
+    today = date.today()
+    month_start = today.replace(day=1)
+
+    # 1️⃣ This month's total expenses
+    month_total = (
+        db.session.query(func.coalesce(func.sum(Expense.amount), 0))
+        .filter(
+            Expense.user_id == current_user.id,
+            Expense.date >= month_start,
+            Expense.date <= today
+        )
+        .scalar()
+    )
+
+    # 2️⃣ Top category this month
+    top_category = (
+        db.session.query(
+            Category,
+            func.sum(Expense.amount).label("total")
+        )
+        .join(Expense)
+        .filter(
+            Expense.user_id == current_user.id,
+            Expense.date >= month_start
+        )
+        .group_by(Category.id)
+        .order_by(func.sum(Expense.amount).desc())
+        .first()
+    )
+
+    # 3️⃣ Active recurring monthly total (expenses only)
+    recurring_total = (
+        db.session.query(func.coalesce(func.sum(RecurringTransaction.amount), 0))
+        .filter(
+            RecurringTransaction.user_id == current_user.id,
+            RecurringTransaction.type == "expense",
+            RecurringTransaction.is_active == True
+        )
+        .scalar()
+    )
+
+    return render_template(
+        "finance/dashboard.html",
+        month_total=month_total,
+        top_category={
+            "name": top_category[0].name,
+            "amount": top_category[1]
+        } if top_category else None,
+        recurring_total=recurring_total
+    )
 
 @finance_bp.route("/expenses")
 @login_required
@@ -109,11 +158,11 @@ def monthly_summary():
     year = int(request.args.get("year", today.year))
     month = int(request.args.get("month", today.month))
 
-    materialize_recurring(
+    '''materialize_recurring(
         current_user.id,
         year=year,
         month=month
-    )
+    )'''
 
     # Current month range
     start_date = date(year, month, 1)
@@ -459,6 +508,7 @@ def recurring_create():
             is_active=is_active,
             type=request.form["type"],
             amount=request.form["amount"],
+            merchant=request.form.get("merchant"),
             description=request.form.get("description"),
             category_id=request.form.get("category_id") or None,
             start_date=request.form["start_date"],
@@ -501,6 +551,7 @@ def recurring_edit(item_id):
         item.is_active = is_active
         item.type = request.form["type"]
         item.amount = request.form["amount"]
+        item.merchant = request.form.get("merchant")
         item.description = request.form.get("description")
         item.category_id = request.form.get("category_id") or None
         item.start_date = request.form["start_date"]

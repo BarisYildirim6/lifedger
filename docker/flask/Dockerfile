@@ -35,4 +35,10 @@ RUN chmod 0644 /etc/cron.d/recurring-cron \
 # Ensure cron can write logs
 RUN touch /var/log/cron.log
 
-CMD ["flask", "run", "--host=0.0.0.0"]
+#CMD ["flask", "run", "--host=0.0.0.0"]
+EXPOSE 5000
+CMD ["gunicorn", \
+     "-b", "0.0.0.0:5000", \
+     "-w", "2", \
+     "--timeout", "120", \
+     "wsgi:app"]

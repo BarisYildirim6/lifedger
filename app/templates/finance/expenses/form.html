@@ -4,15 +4,14 @@
 {% endblock %}
 
 {% block content %}
-<h1 class="text-2xl font-semibold mb-6">
+<h1 style="color:var(--text)" class="text-2xl font-semibold mb-6">
   {{ "Edit" if expense else "Add" }} Expense
 </h1>
 
-<form method="POST" class="bg-white p-6 rounded shadow max-w-lg space-y-4">
-
+<form method="POST" style="background:var(--card)" class="p-6 rounded shadow max-w-lg space-y-4">
   <label class="block">
-    <span class="text-sm">Category</span>
-    <select name="category_id" required class="w-full border rounded px-3 py-2">
+    <span style="color:var(--muted);" class="text-sm">Category</span>
+    <select style="color:var(--text); background:var(--bg); border-color:var(--border)" name="category_id" required class="w-full border rounded px-3 py-2">
       {% for c in categories %}
         <option value="{{ c.id }}"
           {% if expense and expense.category_id == c.id %}selected{% endif %}>
@@ -24,46 +23,46 @@
   </label>
 
   <label class="block">
-    <span class="text-sm">Amount</span>
-    <input type="number" step="0.01" name="amount" required
+    <span style="color:var(--muted);" class="text-sm">Amount</span>
+    <input style="color:var(--text); background:var(--bg); border-color:var(--border)" type="number" step="0.01" name="amount" required
       value="{{ expense.amount if expense else '' }}"
       class="w-full border rounded px-3 py-2">
   </label>
 
   <label class="block">
-    <span class="text-sm">Date</span>
-    <input type="date" name="date" required
+    <span style="color:var(--muted);" class="text-sm">Date</span>
+    <input style="color:var(--text); background:var(--bg); border-color:var(--border)" type="date" name="date" required
       value="{{ today }}"
       class="w-full border rounded px-3 py-2">
   </label>
 
   <label class="block">
-    <span class="text-sm">Merchant</span>
-    <input type="text" name="merchant"
+    <span style="color:var(--muted);" class="text-sm">Merchant</span>
+    <input style="color:var(--text); background:var(--bg); border-color:var(--border)" type="text" name="merchant"
       value="{{ expense.merchant if expense else '' }}"
       class="w-full border rounded px-3 py-2">
   </label>
 
   <label class="block">
-    <span class="text-sm">Payment method</span>
-    <input type="text" name="payment_method"
+    <span style="color:var(--muted);" class="text-sm">Payment method</span>
+    <input style="color:var(--text); background:var(--bg); border-color:var(--border)" type="text" name="payment_method"
       value="{{ expense.payment_method if expense else '' }}"
       class="w-full border rounded px-3 py-2">
   </label>
 
   <label class="block">
-    <span class="text-sm">Description</span>
-    <input type="text" name="description"
+    <span style="color:var(--muted);" class="text-sm">Description</span>
+    <input style="color:var(--text); background:var(--bg); border-color:var(--border)" type="text" name="description"
       value="{{ expense.description if expense else '' }}"
       class="w-full border rounded px-3 py-2">
   </label>
 
   <div class="flex justify-end space-x-3">
-    <a href="{{ url_for('finance.expense_list') }}"
+    <a style="color:var(--text); background:var(--card); border-color:var(--border)" href="{{ url_for('finance.expense_list') }}"
        class="px-4 py-2 border rounded">
       Cancel
     </a>
-    <button class="px-4 py-2 bg-black text-white rounded">
+    <button style="color:var(--card); background:var(--text); border-color:var(--border)" class="px-4 py-2 rounded">
       Save
     </button>
   </div>

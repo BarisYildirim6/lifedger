@@ -3,106 +3,105 @@
 
 {% block content %}
 <div class="flex justify-between items-center mb-6">
-  <h1 class="text-2xl font-semibold">
+  <h1 style="color:var(--text)" class="text-2xl font-semibold">
     {{ year }} / {{ "%02d"|format(month) }} Summary
   </h1>
 
   <form method="get" class="flex space-x-2">
-    <input type="number" name="year" value="{{ year }}"
+    <input style="color:var(--text); background:var(--card); border-color:var(--border)" 
+           type="number" name="year" value="{{ year }}"
            class="border rounded px-2 py-1 w-24">
-    <input type="number" name="month" value="{{ month }}"
+    <input style="color:var(--text); background:var(--card); border-color:var(--border)" 
+           type="number" name="month" value="{{ month }}"
            min="1" max="12"
            class="border rounded px-2 py-1 w-20">
-    <button class="px-3 py-1 bg-black text-white rounded">
+    <button style="color:var(--card); background:var(--text); border-color:var(--border)" class="px-3 py-1 rounded">
       Go
     </button>
   </form>
 </div>
 
 <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-  <div class="bg-white p-4 rounded shadow">
-    <p class="text-sm text-gray-500">This month</p>
-    <p class="text-2xl font-semibold">{{ "%.2f"|format(total) }}</p>
+  <div style="color:var(--text); background:var(--card); border-color:var(--border)"  class="p-4 rounded shadow">
+    <p style="color:var(--muted);" class="text-sm">This month</p>
+    <p class="text-2xl font-semibold">{{ "%.2f"|format(total) }} ₺</p>
   </div>
 
-  <div class="bg-white p-4 rounded shadow">
-    <p class="text-sm text-gray-500">Previous month</p>
-    <p class="text-2xl font-semibold">{{ "%.2f"|format(prev_total) }}</p>
+  <div style="color:var(--text); background:var(--card); border-color:var(--border)"  class="p-4 rounded shadow">
+    <p style="color:var(--muted);" class="text-sm">Previous month</p>
+    <p class="text-2xl font-semibold">{{ "%.2f"|format(prev_total) }} ₺</p>
   </div>
 
-  <div class="bg-white p-4 rounded shadow">
-    <p class="text-sm text-gray-500">Change</p>
+  <div style="color:var(--text); background:var(--card); border-color:var(--border)"  class="p-4 rounded shadow">
+    <p style="color:var(--muted);" class="text-sm">Change</p>
     <p class="text-2xl font-semibold
       {% if delta > 0 %}text-red-600
       {% elif delta < 0 %}text-green-600
       {% endif %}">
-      {{ "%.2f"|format(delta) }}
+      {{ "%.2f"|format(delta) }} ₺
     </p>
   </div>
 
-  <div class="bg-white p-4 rounded shadow">
-    <p class="text-sm text-gray-500">Income</p>
+  <div style="color:var(--text); background:var(--card); border-color:var(--border)"  class="p-4 rounded shadow">
+    <p style="color:var(--muted);" class="text-sm">Income</p>
     <p class="text-2xl font-semibold">
-      {{ "%.2f"|format(income_total) }}
+      {{ "%.2f"|format(income_total) }} ₺
     </p>
   </div>
 
-  <div class="bg-white p-4 rounded shadow">
-    <p class="text-sm text-gray-500">Net balance</p>
+  <div style="color:var(--text); background:var(--card); border-color:var(--border)"  class="p-4 rounded shadow">
+    <p style="color:var(--muted);" class="text-sm">Net balance</p>
     <p class="text-2xl font-semibold
       {% if net_balance >= 0 %}text-green-600{% else %}text-red-600{% endif %}">
-      {{ "%.2f"|format(net_balance) }}
+      {{ "%.2f"|format(net_balance) }} ₺
     </p>
   </div>
 </div>
 
-<h2 class="text-xl font-semibold mb-3">6-Month Expense Trend</h2>
+<h2 style="color:var(--text);" class="text-xl font-semibold mb-3">6-Month Expense Trend</h2>
 
-<div class="bg-white rounded shadow p-4 mb-8">
+<div style="color:var(--text); background:var(--card); border-color:var(--border)" class="rounded shadow p-4 mb-8">
   <canvas id="trendChart" class="max-h-80"></canvas>
 </div>
 
-<h2 class="text-xl font-semibold mb-3">Budget vs Actual</h2>
-
-<div class="bg-white rounded shadow p-4 mb-8">
+<h2 style="color:var(--text);" class="text-xl font-semibold mb-3">Budget vs Actual</h2>
+<div style="color:var(--text); background:var(--card); border-color:var(--border)" class="rounded shadow p-4 mb-8">
   <canvas id="budgetChart" class="max-h-96"></canvas>
 </div>
 
-<h2 class="text-xl font-semibold mb-3">Insights</h2>
+<h2 style="color:var(--text);" class="text-xl font-semibold mb-3">Insights</h2>
 
-<div class="bg-white rounded shadow p-4 space-y-2 mb-8">
+<div style="color:var(--text); background:var(--card); border-color:var(--border)" class="rounded shadow p-4 space-y-2 mb-8">
   {% for insight in insights %}
-    <p class="text-gray-700">• {{ insight }}</p>
+    <p style="color:var(--text);" class="text-gray-700">• {{ insight }}</p>
   {% else %}
-    <p class="text-gray-500">No insights available.</p>
+    <p style="color:var(--muted);" class="text-gray-500">No insights available.</p>
   {% endfor %}
 </div>
 
-<h2 class="text-xl font-semibold mb-3">Spending Breakdown</h2>
-
-<div class="bg-white rounded shadow p-4 mb-8">
+<h2 style="color:var(--text);" class="text-xl font-semibold mb-3">Spending Breakdown</h2>
+<div style="color:var(--text); background:var(--card); border-color:var(--border)" class="rounded shadow p-4 mb-8">
   {% if chart_labels %}
     <canvas id="categoryChart" class="max-h-96"></canvas>
   {% else %}
-    <p class="text-gray-500">No data to display.</p>
+    <p style="color:var(--muted);" class="text-gray-500">No data to display.</p>
   {% endif %}
 </div>
 
-<h2 class="text-xl font-semibold mb-3">By Category</h2>
-
-<table class="w-full bg-white shadow rounded">
-  <thead class="bg-gray-100 text-left">
+<h2 style="color:var(--text);" class="text-xl font-semibold mb-3">By Category</h2>
+<table style="background:var(--card);" class="w-full shadow rounded mb-8">
+  <thead style="background:var(--text)" class="text-left">
     <tr>
-      <th class="p-3">Category</th>
-      <th class="p-3 text-right">Total</th>
+      <th style="color:var(--card)" class="p-3">Category</th>
+      <th style="color:var(--card)" class="p-3 text-right">Total</th>
     </tr>
   </thead>
   <tbody>
     {% for name, total in by_category %}
     <tr class="border-t">
-      <td class="p-3">{{ name }}</td>
-      <td class="p-3 text-right font-mono">
-        {{ "%.2f"|format(total) }}
+      <td style="color:var(--text)" class="p-3">{{ name }}</td>
+      <td style="color:var(--text)" class="p-3 text-right font-mono">
+        {{ "%.2f"|format(total) }} ₺
       </td>
     </tr>
     {% else %}

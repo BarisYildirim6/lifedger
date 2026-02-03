@@ -2,23 +2,24 @@
 {% block title %}Category · lifedger{% endblock %}
 
 {% block content %}
-<h1 class="text-2xl font-semibold mb-6">
+<h1 style="color:var(--text)" class="text-2xl font-semibold mb-6">
   {{ "Edit" if category else "Add" }} Category
 </h1>
 
 <form method="POST"
-      class="bg-white p-6 rounded shadow max-w-lg space-y-4">
+      style="background:var(--card)"
+      class="p-6 rounded shadow max-w-lg space-y-4">
 
   <label class="block">
-    <span class="text-sm">Name</span>
-    <input type="text" name="name" required
+    <span style="color:var(--muted);" class="text-sm">Name</span>
+    <input style="color:var(--text); background:var(--bg); border-color:var(--border)" type="text" name="name" required
       value="{{ category.name if category else '' }}"
       class="w-full border rounded px-3 py-2">
   </label>
 
   <label class="block">
-    <span class="text-sm">Parent category (optional)</span>
-    <select name="parent_id"
+    <span style="color:var(--muted);" class="text-sm">Parent category (optional)</span>
+    <select style="color:var(--text); background:var(--bg); border-color:var(--border)" name="parent_id"
             class="w-full border rounded px-3 py-2">
       <option value="">— None —</option>
       {% for p in parents %}
@@ -31,11 +32,11 @@
   </label>
 
   <div class="flex justify-end space-x-3">
-    <a href="{{ url_for('finance.category_list') }}"
+    <a style="color:var(--text); background:var(--card); border-color:var(--border)" href="{{ url_for('finance.category_list') }}"
        class="px-4 py-2 border rounded">
       Cancel
     </a>
-    <button class="px-4 py-2 bg-black text-white rounded">
+    <button style="color:var(--card); background:var(--text); border-color:var(--border)" class="px-4 py-2 border rounded">
       Save
     </button>
   </div>

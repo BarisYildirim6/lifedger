@@ -2,12 +2,13 @@
 {% block title %}Recurring · lifedger{% endblock %}
 
 {% block content %}
-<h1 class="text-2xl font-semibold mb-6">
+<h1 style="color:var(--text)" class="text-2xl font-semibold mb-6">
   {{ "Edit" if item else "Add" }} Recurring Transaction
 </h1>
 
 <form method="POST"
-      class="bg-white p-6 rounded shadow max-w-xl space-y-5">
+      style="background:var(--card)"
+      class="p-6 rounded shadow max-w-xl space-y-5">
 
   <!-- Active toggle -->
   <label class="flex items-center space-x-3">
@@ -17,7 +18,7 @@
            value="1"
            {% if not item or item.is_active %}checked{% endif %}
            class="h-4 w-4 rounded border-gray-300">
-    <span class="text-sm font-medium">
+    <span style="color:var(--muted);" class="text-sm font-medium">
       Active (repeats every month until disabled)
     </span>
   </label>
@@ -25,8 +26,8 @@
   <hr>
 
   <label class="block">
-    <span class="text-sm">Type</span>
-    <select name="type" required
+    <span style="color:var(--muted);" class="text-sm">Type</span>
+    <select style="color:var(--text); background:var(--bg); border-color:var(--border)" name="type" required
             class="w-full border rounded px-3 py-2">
       <option value="expense"
         {% if item and item.type == "expense" %}selected{% endif %}>
@@ -40,22 +41,22 @@
   </label>
 
   <label class="block">
-    <span class="text-sm">Amount</span>
-    <input type="number" step="0.01" name="amount" required
+    <span style="color:var(--muted);" class="text-sm">Amount</span>
+    <input style="color:var(--text); background:var(--bg); border-color:var(--border)" type="number" step="0.01" name="amount" required
            value="{{ item.amount if item else '' }}"
            class="w-full border rounded px-3 py-2">
   </label>
 
   <label class="block">
-    <span class="text-sm">Description</span>
-    <input type="text" name="description"
+    <span style="color:var(--muted);" class="text-sm">Description</span>
+    <input style="color:var(--text); background:var(--bg); border-color:var(--border)" type="text" name="description"
            value="{{ item.description if item else '' }}"
            class="w-full border rounded px-3 py-2">
   </label>
 
   <label class="block">
-    <span class="text-sm">Category (expenses only)</span>
-    <select name="category_id"
+    <span style="color:var(--muted);" class="text-sm">Category (expenses only)</span>
+    <select style="color:var(--text); background:var(--bg); border-color:var(--border)" name="category_id"
             class="w-full border rounded px-3 py-2">
       <option value="">— None —</option>
       {% for c in categories %}
@@ -70,15 +71,17 @@
 
   <div class="grid grid-cols-2 gap-4">
     <label class="block">
-      <span class="text-sm">Start date</span>
-      <input type="date" name="start_date" required
+      <span style="color:var(--muted);" class="text-sm">Start date</span>
+      <input style="color:var(--text); background:var(--bg); border-color:var(--border)"
+             type="date" name="start_date" required
              value="{{ item.start_date if item else '' }}"
              class="w-full border rounded px-3 py-2">
     </label>
 
     <label class="block">
-      <span class="text-sm">End date</span>
-      <input type="date"
+      <span style="color:var(--muted);" class="text-sm">End date</span>
+      <input style="color:var(--text); background:var(--bg); border-color:var(--border)" 
+             type="date"
              name="end_date"
              id="end_date"
              value="{{ item.end_date if item else '' }}"
@@ -90,19 +93,20 @@
   </div>
 
   <label class="block">
-    <span class="text-sm">Day of month</span>
-    <input type="number" name="day_of_month"
+    <span style="color:var(--muted);" class="text-sm">Day of month</span>
+    <input style="color:var(--text); background:var(--bg); border-color:var(--border)"
+           type="number" name="day_of_month"
            min="1" max="28" required
            value="{{ item.day_of_month if item else 1 }}"
            class="w-full border rounded px-3 py-2">
   </label>
 
   <div class="flex justify-end space-x-3 pt-4">
-    <a href="{{ url_for('finance.recurring_list') }}"
+    <a style="color:var(--text); background:var(--card); border-color:var(--border)" href="{{ url_for('finance.recurring_list') }}"
        class="px-4 py-2 border rounded">
       Cancel
     </a>
-    <button class="px-4 py-2 bg-black text-white rounded">
+    <button style="color:var(--card); background:var(--text); border-color:var(--border)" class="px-4 py-2 border rounded">
       Save
     </button>
   </div>

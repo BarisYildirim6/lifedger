@@ -21,7 +21,7 @@
     <div style="background:var(--card); border-color:var(--border)" class="border rounded-xl shadow p-5">
       <p style="color:var(--muted)" class="text-sm">This month</p>
       <p style="color:var(--text)" class="text-2xl font-semibold mt-1">
-        {{ month_total or "—" }}
+        {{ month_total | round(2) or "—" }} ₺
       </p>
       <p class="text-xs text-gray-400 mt-1">
         total expenses
@@ -36,7 +36,7 @@
       </p>
       {% if top_category %}
         <p class="text-xs text-gray-400 mt-1">
-          {{ top_category.amount }}
+          {{ top_category.amount | round(2) }} ₺
         </p>
       {% endif %}
     </div>
@@ -45,7 +45,7 @@
     <div style="background:var(--card); border-color:var(--border)" class="border rounded-xl shadow p-5">
       <p style="color:var(--muted)" class="text-sm">Recurring impact</p>
       <p style="color:var(--text)" class="text-2xl font-semibold mt-1">
-        {{ recurring_total or "—" }}
+        {{ recurring_total | round(2) or "—" }} ₺
       </p>
       <p class="text-xs text-gray-400 mt-1">
         monthly commitments
